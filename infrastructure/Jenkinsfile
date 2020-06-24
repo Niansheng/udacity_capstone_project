@@ -1,0 +1,27 @@
+
+pipeline {
+	agent any
+	stages {
+
+		stage('Create kubernetes cluster') {
+			steps {
+				withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+					sh '''
+						eksctl create cluster -f cloud_formation/cluster.yml
+					'''
+				}
+			}
+		}
+
+		stage('Create conf file cluster') {
+			steps {
+				withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+					sh '''
+						aws eks --region eu-west-2 update-kubeconfig --name capstonecluster
+					'''
+				}
+			}
+		}
+
+	}
+}
