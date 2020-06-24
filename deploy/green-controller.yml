@@ -16,6 +16,7 @@ spec:
       containers:
         - name: green
           image: victorliun/nginx-app
+          imagePullPolicy: Always
           ports:
             - name: http-server
               containerPort: 80
