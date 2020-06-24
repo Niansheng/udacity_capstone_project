@@ -35,5 +35,60 @@ pipeline {
                 sh "docker rmi $registry:latest"
             }
         }
-    }
+        stage('Set current kubectl context') {
+			steps {
+				withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+					sh '''
+						kubectl config use-context arn:aws:eks:eu-west-2:564479081737:cluster/capstonecluster
+					'''
+				}
+			}
+		}
+
+		stage('Deploy blue container') {
+			steps {
+				withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+					sh '''
+						kubectl apply -f ./deploy/blue-controller.json
+					'''
+				}
+			}
+		}
+
+		stage('Deploy green container') {
+			steps {
+				withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+					sh '''
+						kubectl apply -f ./deploy/green-controller.json
+					'''
+				}
+			}
+		}
+
+		stage('Create the service in the cluster, redirect to blue') {
+			steps {
+				withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+					sh '''
+						kubectl apply -f ./deploy/blue-service.json
+					'''
+				}
+			}
+		}
+
+		stage('Wait user approve') {
+            steps {
+                input "Ready to redirect traffic to green?"
+            }
+        }
+
+		stage('Create the service in the cluster, redirect to green') {
+			steps {
+				withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+					sh '''
+						kubectl apply -f ./deploy/green-service.json
+					'''
+				}
+			}
+		}
+	}
 }
