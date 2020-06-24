@@ -70,7 +70,7 @@ pipeline {
             steps {
                 withAWS(region:'eu-west-2', credentials:'aws-static') {
                     sh '''
-                        kubectl apply -f ./deploy/blue-service.yml
+                        kubectl apply -f ./deploy/lb-blue.yml
                     '''
                 }
             }
@@ -86,7 +86,7 @@ pipeline {
             steps {
                 withAWS(region:'eu-west-2', credentials:'aws-static') {
                     sh '''
-                        kubectl apply -f ./deploy/green-service.yml
+                        kubectl apply -f ./deploy/lb-green.yml
                     '''
                 }
             }
