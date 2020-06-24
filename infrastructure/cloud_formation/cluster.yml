@@ -1,0 +1,12 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: capstonecluster
+  region: eu-west-2
+
+nodeGroups:
+  - name: standard-workers
+    instanceType: t3.micro
+    minSize: 2
+    maxSize: 3
