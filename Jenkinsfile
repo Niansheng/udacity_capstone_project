@@ -37,7 +37,7 @@ pipeline {
         }
         stage('Set current kubectl context') {
             steps {
-                withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+                withAWS(region:'eu-west-2', credentials:'aws-static') {
                     sh 'aws eks --region eu-west-2 update-kubeconfig --name capstonecluster'
                     sh '''
                         kubectl config use-context arn:aws:eks:eu-west-2:564479081737:cluster/capstonecluster
@@ -48,7 +48,7 @@ pipeline {
 
         stage('Deploy blue container') {
             steps {
-                withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+                withAWS(region:'eu-west-2', credentials:'aws-static') {
                     sh '''
                         kubectl apply -f ./deploy/blue-controller.json
                     '''
@@ -58,7 +58,7 @@ pipeline {
 
         stage('Deploy green container') {
             steps {
-                withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+                withAWS(region:'eu-west-2', credentials:'aws-static') {
                     sh '''
                         kubectl apply -f ./deploy/green-controller.json
                     '''
@@ -68,7 +68,7 @@ pipeline {
 
         stage('Create the service in the cluster, redirect to blue') {
             steps {
-                withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+                withAWS(region:'eu-west-2', credentials:'aws-static') {
                     sh '''
                         kubectl apply -f ./deploy/blue-service.json
                     '''
@@ -84,7 +84,7 @@ pipeline {
 
         stage('Create the service in the cluster, redirect to green') {
             steps {
-                withAWS(region:'eu-west-2', credentials:'aws-capstone') {
+                withAWS(region:'eu-west-2', credentials:'aws-static') {
                     sh '''
                         kubectl apply -f ./deploy/green-service.json
                     '''
